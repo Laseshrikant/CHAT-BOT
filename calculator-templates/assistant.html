@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Google Assistant Style - Birthday</title>
+  <style>
+    :root{
+      --bg:#0b0b10;
+      --panel:#12121a;
+      --text:#eaeaf2;
+      --muted:#a7a7b5;
+      --brand:#7c3aed;
+      --brand2:#22c55e;
+      --bubble1:#1f1f2a;
+      --bubble2:#0f172a;
+      --border:rgba(255,255,255,.12);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 20% 0%, rgba(124,58,237,.25), transparent 60%),
+                  radial-gradient(900px 600px at 90% 10%, rgba(34,197,94,.18), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      height:100vh;
+      overflow:hidden;
+    }
+
+    .wrap{height:100vh; display:flex; flex-direction:column;}
+
+    header{
+      padding:16px 18px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      border-bottom:1px solid var(--border);
+      background: rgba(18,18,26,.75);
+      backdrop-filter: blur(8px);
+    }
+
+    .logo{
+      width:40px; height:40px; border-radius:14px;
+      background: linear-gradient(135deg, rgba(124,58,237,.9), rgba(34,197,94,.7));
+      box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 10px 30px rgba(124,58,237,.25);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:800;
+    }
+
+    header .title{display:flex; flex-direction:column; line-height:1.1}
+    header .title b{font-size:14px}
+    header .title span{font-size:12px; color:var(--muted)}
+
+    .content{flex:1; display:flex; justify-content:center; padding:18px;}
+
+    .chat{
+      width:min(980px, 100%);
+      display:flex; flex-direction:column;
+      border:1px solid var(--border);
+      background: rgba(18,18,26,.65);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow: 0 18px 60px rgba(0,0,0,.4);
+    }
+
+    .messages{
+      flex:1;
+      padding:18px;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .msg{max-width:78%; padding:12px 14px; border-radius:16px; border:1px solid rgba(255,255,255,.08)}
+    .msg.user{align-self:flex-end; background: linear-gradient(180deg, rgba(124,58,237,.18), rgba(124,58,237,.08));}
+    .msg.bot{align-self:flex-start; background: linear-gradient(180deg, rgba(34,197,94,.14), rgba(34,197,94,.05));}
+
+    .msg .name{font-size:12px; color:var(--muted); margin-bottom:6px; display:flex; gap:8px; align-items:center}
+    .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: var(--brand2);
+      box-shadow: 0 0 0 2px rgba(34,197,94,.18);
+    }
+    .msg .text{font-size:14px; white-space:pre-wrap; line-height:1.35}
+
+    .composer{
+      padding:14px;
+      border-top:1px solid var(--border);
+      display:flex;
+      gap:10px;
+      background: rgba(18,18,26,.75);
+      backdrop-filter: blur(8px);
+    }
+
+    input{
+      flex:1;
+      height:46px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.25);
+      color:var(--text);
+      padding:0 14px;
+      outline:none;
+      font-size:14px;
+    }
+    input:focus{border-color: rgba(124,58,237,.55); box-shadow: 0 0 0 4px rgba(124,58,237,.15)}
+
+    button{
+      height:46px;
+      padding:0 16px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(34,197,94,.65));
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+    }
+    button:active{transform: translateY(1px)}
+
+    .quick{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      padding:0 14px 14px;
+      border-top:0;
+      background: rgba(18,18,26,.75);
+    }
+    .chip{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.2);
+      color:var(--muted);
+      cursor:pointer;
+      font-size:12px;
+      user-select:none;
+    }
+    .chip:hover{color:var(--text)}
+
+    .hint{padding:10px 14px 16px; color:var(--muted); font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">GA</div>
+      <div class="title">
+        <b>Google Assistant Style</b>
+        <span>Birthday assistant • local demo (no API)</span>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="chat">
+        <div class="messages" id="messages"></div>
+
+        <div class="hint" id="hint">Type your name (example: Shree) and I’ll greet you. Then ask anything like “birthday” or “show love”.</div>
+
+        <div class="quick">
+          <div class="chip" data-q="My name is Shree">My name is Shree</div>
+          <div class="chip" data-q="Birthday message">Birthday message</div>
+          <div class="chip" data-q="Start the birthday song">Start the birthday song</div>
+        </div>
+
+        <div class="composer">
+          <input id="input" type="text" placeholder="Ask assistant..." autocomplete="off" />
+          <button id="send">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const messagesEl = document.getElementById('messages');
+    const inputEl = document.getElementById('input');
+    const sendBtn = document.getElementById('send');
+    const hintEl = document.getElementById('hint');
+
+    const state = {
+      userName: 'Shree',
+    };
+
+    function addMessage({who, text}){
+      const wrap = document.createElement('div');
+      wrap.className = 'msg ' + (who === 'user' ? 'user' : 'bot');
+
+      const name = document.createElement('div');
+      name.className = 'name';
+      name.innerHTML = who === 'user'
+        ? '<span>You</span>'
+        : '<span class="dot"></span><span>Assistant</span>';
+
+      const body = document.createElement('div');
+      body.className = 'text';
+      body.textContent = text;
+
+      wrap.appendChild(name);
+      wrap.appendChild(body);
+      messagesEl.appendChild(wrap);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function normalize(s){
+      return (s || '').toLowerCase().trim();
+    }
+
+    function assistantReply(q){
+      const n = normalize(q);
+
+      // Name capture
+      // Matches: "my name is shree" / "name is Shree"
+      const m = n.match(/\bname\s*(is|=)\s*([a-zA-Z]+)/);
+      if (m && m[2]) {
+        const name = m[2][0].toUpperCase() + m[2].slice(1);
+        state.userName = name;
+        return `Nice to meet you, ${name}! 🎉\n\nWant me to show a birthday message?`;
+      }
+
+      // Explicit request for greeting
+      if (n.includes('hi') || n.includes('hello') || n.includes('hey')) {
+        return `Hey ${state.userName}! 😊\nHow can I help you today?`;
+      }
+
+      // Birthday content
+      if (n.includes('birthday') || n.includes('happy birthday')) {
+        return `Happy Birthday, ${state.userName}! 🎂💖\nMay your day be full of smiles, surprises, and love! ✨`;
+      }
+
+      if (n.includes('cricket') || n.includes('ball') || n.includes('play shot') || n.includes('six')) {
+        return `Cricket mode: ON 🏏🔥\nStrike hard, celebrate loud—BOOM SIX!!! 💥`;
+      }
+
+      if (n.includes('love') || n.includes('special') || n.includes('message')) {
+        return `For you, ${state.userName}:\n\nYou are not just my favorite player... you are my favorite person ❤️\nEvery moment with you feels magical ✨`;
+      }
+
+      if (n.includes('show') && n.includes('birthday')) {
+        return `Sure! 🎉\nYou can open your existing birthday page next: index.html`;
+      }
+
+      // Default
+      return `Got it, ${state.userName}. 😊\nYou can say: “birthday message” or “my name is Shree”.`;
+    }
+
+    function send(){
+      const q = inputEl.value;
+      if (!q.trim()) return;
+      addMessage({who:'user', text:q});
+      inputEl.value = '';
+      hintEl.textContent = 'Assistant is thinking...';
+
+      setTimeout(() => {
+        const a = assistantReply(q);
+        addMessage({who:'bot', text:a});
+        hintEl.textContent = 'Type your name again anytime, then ask for a birthday message.';
+      }, 450);
+    }
+
+    sendBtn.addEventListener('click', send);
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') send();
+    });
+
+    // Initial assistant message
+    addMessage({who:'bot', text:`Hi! I’m your birthday assistant.\nTell me your name (example: “My name is Shree”).`});
+  </script>
+</body>
+</html>
+

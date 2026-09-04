@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Small Calculator</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app">
+    <h1>Small Calculator</h1>
+
+    <div class="display" role="status" aria-live="polite" id="display">0</div>
+
+    <div class="grid" aria-label="Calculator buttons">
+      <button class="btn" data-action="clear">C</button>
+      <button class="btn" data-action="back">⌫</button>
+      <button class="btn op" data-op="/">÷</button>
+      <button class="btn op" data-op="*">×</button>
+
+      <button class="btn" data-digit="7">7</button>
+      <button class="btn" data-digit="8">8</button>
+      <button class="btn" data-digit="9">9</button>
+      <button class="btn op" data-op="-">−</button>
+
+      <button class="btn" data-digit="4">4</button>
+      <button class="btn" data-digit="5">5</button>
+      <button class="btn" data-digit="6">6</button>
+      <button class="btn op" data-op="+">+</button>
+
+      <button class="btn" data-digit="1">1</button>
+      <button class="btn" data-digit="2">2</button>
+      <button class="btn" data-digit="3">3</button>
+      <button class="btn equals" data-action="equals">=</button>
+
+      <button class="btn" data-digit="0" style="grid-column: span 2;">0</button>
+      <button class="btn" data-action="decimal">.</button>
+    </div>
+
+    <div class="help">Supports + − × ÷ and decimal.</div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+
